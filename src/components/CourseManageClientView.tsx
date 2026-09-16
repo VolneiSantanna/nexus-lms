@@ -26,6 +26,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ImageUploader } from "./ImageUploader";
+import { formatDuration } from "@/lib/utils";
 
 interface CourseManageClientViewProps {
   course: {
@@ -48,6 +49,7 @@ interface CourseManageClientViewProps {
         description: string | null;
         type: string;
         durationMinutes: number | null;
+        durationSeconds?: number | null;
         liveStatus: string | null;
         liveScheduledAt: string | Date | null;
         videoEmbedCode: string | null;
@@ -106,7 +108,8 @@ export function CourseManageClientView({
     chatEmbedCode: "",
     liveScheduledAt: "",
     liveStatus: "SCHEDULED" as "SCHEDULED" | "LIVE" | "ENDED",
-    durationMinutes: 20,
+    durationMinutes: 0,
+    durationSeconds: 0,
   });
 
   // Edit Lesson State
@@ -120,6 +123,7 @@ export function CourseManageClientView({
     liveScheduledAt: string;
     liveStatus: "SCHEDULED" | "LIVE" | "ENDED";
     durationMinutes: number;
+    durationSeconds: number;
   } | null>(null);
 
   // Search in enrolled students
@@ -309,7 +313,8 @@ export function CourseManageClientView({
         chatEmbedCode: "",
         liveScheduledAt: "",
         liveStatus: "SCHEDULED",
-        durationMinutes: 20,
+        durationMinutes: 0,
+        durationSeconds: 0,
       });
       router.refresh();
     } catch {
@@ -619,7 +624,8 @@ export function CourseManageClientView({
                                   ? format(new Date(lesson.liveScheduledAt), "yyyy-MM-dd'T'HH:mm")
                                   : "",
                                 liveStatus: (lesson.liveStatus as "SCHEDULED" | "LIVE" | "ENDED") || "SCHEDULED",
-                                durationMinutes: lesson.durationMinutes || 20,
+                                durationMinutes: lesson.durationMinutes ?? 0,
+                                durationSeconds: lesson.durationSeconds ?? 0,
                               })
                             }
                             className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs hover:bg-[#151924] transition-colors group cursor-pointer"
@@ -641,12 +647,12 @@ export function CourseManageClientView({
                                 </p>
                                 <div className="flex items-center gap-3 mt-0.5 text-[11px] text-slate-400">
                                   <span>{isLive ? "Live Streaming" : "VOD (Gravada)"}</span>
-                                  {lesson.durationMinutes && (
+                                  {(lesson.durationMinutes || lesson.durationSeconds) ? (
                                     <span className="flex items-center gap-1">
                                       <Clock className="w-3 h-3" />
-                                      {lesson.durationMinutes} min
+                                      {formatDuration(lesson.durationMinutes, lesson.durationSeconds)}
                                     </span>
-                                  )}
+                                  ) : null}
                                   {isLive && lesson.liveScheduledAt && (
                                     <span className="text-amber-400">
                                       {format(new Date(lesson.liveScheduledAt), "dd/MM/yyyy HH:mm")}
@@ -682,7 +688,8 @@ export function CourseManageClientView({
                                       ? format(new Date(lesson.liveScheduledAt), "yyyy-MM-dd'T'HH:mm")
                                       : "",
                                     liveStatus: (lesson.liveStatus as "SCHEDULED" | "LIVE" | "ENDED") || "SCHEDULED",
-                                    durationMinutes: lesson.durationMinutes || 20,
+                                    durationMinutes: lesson.durationMinutes ?? 0,
+                                    durationSeconds: lesson.durationSeconds ?? 0,
                                   })
                                 }
                                 className="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white bg-[#182030] hover:bg-[#20293d] transition-all flex items-center gap-1 text-xs font-medium border border-[#232d42]"
@@ -1053,13 +1060,37 @@ export function CourseManageClientView({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Duração Estimada (Minutos)
+                    Duração (Minutos)
                   </label>
                   <input
                     type="number"
-                    value={newLesson.durationMinutes}
+                    min="0"
+                    placeholder="0"
+                    value={newLesson.durationMinutes || ""}
                     onChange={(e) =>
-                      setNewLesson({ ...newLesson, durationMinutes: Number(e.target.value) })
+                      setNewLesson({
+                        ...newLesson,
+                        durationMinutes: e.target.value === "" ? 0 : Math.max(0, Number(e.target.value)),
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-[#0b0d12] border border-[#1e2533] rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Duração (Segundos)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    placeholder="0 a 59 (ex: 38)"
+                    value={newLesson.durationSeconds || ""}
+                    onChange={(e) =>
+                      setNewLesson({
+                        ...newLesson,
+                        durationSeconds: e.target.value === "" ? 0 : Math.max(0, Math.min(59, Number(e.target.value))),
+                      })
                     }
                     className="w-full px-3 py-2 bg-[#0b0d12] border border-[#1e2533] rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
                   />
@@ -1227,15 +1258,36 @@ export function CourseManageClientView({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Duração Estimada (Minutos)
+                    Duração (Minutos)
                   </label>
                   <input
                     type="number"
-                    value={editingLesson.durationMinutes}
+                    min="0"
+                    placeholder="0"
+                    value={editingLesson.durationMinutes || ""}
                     onChange={(e) =>
                       setEditingLesson({
                         ...editingLesson,
-                        durationMinutes: Number(e.target.value),
+                        durationMinutes: e.target.value === "" ? 0 : Math.max(0, Number(e.target.value)),
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-[#0b0d12] border border-[#1e2533] rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Duração (Segundos)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    placeholder="0 a 59 (ex: 38)"
+                    value={editingLesson.durationSeconds || ""}
+                    onChange={(e) =>
+                      setEditingLesson({
+                        ...editingLesson,
+                        durationSeconds: e.target.value === "" ? 0 : Math.max(0, Math.min(59, Number(e.target.value))),
                       })
                     }
                     className="w-full px-3 py-2 bg-[#0b0d12] border border-[#1e2533] rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"

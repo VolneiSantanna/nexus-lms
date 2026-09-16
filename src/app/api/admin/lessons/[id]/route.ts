@@ -24,6 +24,7 @@ export async function PUT(
       liveScheduledAt,
       liveStatus,
       durationMinutes,
+      durationSeconds,
     } = body;
 
     if (!title || !title.trim()) {
@@ -40,7 +41,8 @@ export async function PUT(
         chatEmbedCode: type === "LIVE" ? chatEmbedCode : null,
         liveScheduledAt: liveScheduledAt ? new Date(liveScheduledAt) : null,
         liveStatus: type === "LIVE" ? liveStatus : null,
-        durationMinutes: durationMinutes ? Number(durationMinutes) : 0,
+        durationMinutes: durationMinutes !== undefined && durationMinutes !== null ? Number(durationMinutes) : 0,
+        durationSeconds: durationSeconds !== undefined && durationSeconds !== null ? Number(durationSeconds) : 0,
       },
     });
 

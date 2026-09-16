@@ -31,6 +31,7 @@ interface LessonClientViewProps {
         title: string;
         type: string;
         durationMinutes: number | null;
+        durationSeconds?: number | null;
         liveStatus?: string | null;
         liveScheduledAt?: Date | string | null;
       }[];
@@ -47,6 +48,7 @@ interface LessonClientViewProps {
     liveScheduledAt: Date | string | null;
     liveStatus: string | null;
     durationMinutes: number | null;
+    durationSeconds?: number | null;
   };
   initialIsCompleted: boolean;
   nextLesson: {
@@ -153,10 +155,10 @@ export function LessonClientView({
                 {isLiveType ? "Live Streaming" : "Aula VOD"}
               </span>
 
-              {lesson.durationMinutes ? (
+              {(lesson.durationMinutes || lesson.durationSeconds) ? (
                 <span className="text-xs text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3 text-slate-500" />
-                  {formatDuration(lesson.durationMinutes)}
+                  {formatDuration(lesson.durationMinutes, lesson.durationSeconds)}
                 </span>
               ) : null}
             </div>
@@ -276,7 +278,7 @@ export function LessonClientView({
                           {isLive ? (
                             <span className="text-red-400 font-semibold">LIVE</span>
                           ) : (
-                            <span>{formatDuration(l.durationMinutes)}</span>
+                            <span>{formatDuration(l.durationMinutes, l.durationSeconds)}</span>
                           )}
                         </div>
                       </div>

@@ -57,6 +57,7 @@ interface AdminClientViewProps {
         title: string;
         type: string;
         durationMinutes: number | null;
+        durationSeconds?: number | null;
         liveStatus: string | null;
         liveScheduledAt: string | Date | null;
         videoEmbedCode: string | null;

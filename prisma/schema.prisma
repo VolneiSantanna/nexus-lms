@@ -55,6 +55,7 @@ model Lesson {
   liveScheduledAt DateTime?
   liveStatus      String?          @default("SCHEDULED") // "SCHEDULED" | "LIVE" | "ENDED"
   durationMinutes Int?             @default(0)
+  durationSeconds Int?             @default(0)
   orderIndex      Int              @default(0)
   moduleId        String
   module          Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)

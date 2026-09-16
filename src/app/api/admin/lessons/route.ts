@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       liveScheduledAt,
       liveStatus = "SCHEDULED",
       durationMinutes,
+      durationSeconds,
       moduleId,
     } = await request.json();
 
@@ -53,7 +54,8 @@ export async function POST(request: Request) {
         chatEmbedCode: type === "LIVE" ? chatEmbedCode : null,
         liveScheduledAt: liveScheduledAt ? new Date(liveScheduledAt) : null,
         liveStatus: type === "LIVE" ? liveStatus : null,
-        durationMinutes: durationMinutes ? Number(durationMinutes) : 0,
+        durationMinutes: durationMinutes !== undefined && durationMinutes !== null ? Number(durationMinutes) : 0,
+        durationSeconds: durationSeconds !== undefined && durationSeconds !== null ? Number(durationSeconds) : 0,
         orderIndex,
         moduleId,
       },

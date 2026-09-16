@@ -130,7 +130,7 @@ export default async function CourseOverviewPage({ params }: PageProps) {
                             Ao Vivo
                           </span>
                         ) : (
-                          <span className="text-[11px]">{formatDuration(lesson.durationMinutes)}</span>
+                          <span className="text-[11px]">{formatDuration(lesson.durationMinutes, lesson.durationSeconds)}</span>
                         )}
                         <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-white transition-all" />
                       </div>

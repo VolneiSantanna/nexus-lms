@@ -29,6 +29,7 @@ export default async function DashboardPage() {
           title: string;
           type: string;
           durationMinutes: number | null;
+          durationSeconds?: number | null;
         }>;
       }>;
     };
