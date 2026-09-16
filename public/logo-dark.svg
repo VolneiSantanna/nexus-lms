@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#11141C" />
+      <stop offset="100%" stop-color="#0B0D12" />
+    </linearGradient>
+    <linearGradient id="nexusGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+    <filter id="glowDark" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#2563EB" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect x="0" y="0" width="460" height="120" rx="24" fill="url(#bgGrad)" stroke="#1E2533" stroke-width="2" />
+
+  <!-- Icon Container -->
+  <g filter="url(#glowDark)">
+    <rect x="24" y="24" width="72" height="72" rx="20" fill="url(#nexusGradDark)" />
+    <rect x="24" y="24" width="72" height="72" rx="20" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5" />
+    <!-- Play Icon -->
+    <path d="M55 47L72.5 60L55 73V47Z" fill="#FFFFFF" />
+  </g>
+
+  <!-- Typography -->
+  <text x="116" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">
+    Nexus<tspan fill="#3B82F6" font-weight="800">LMS</tspan>
+  </text>
+  
+  <text x="118" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#94A3B8" letter-spacing="2.5">
+    PLATAFORMA EDUCACIONAL
+  </text>
+</svg>

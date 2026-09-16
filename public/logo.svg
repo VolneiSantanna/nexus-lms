@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 90" width="100%" height="100%">
+  <defs>
+    <linearGradient id="nexusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#2563EB" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Icon Container -->
+  <g filter="url(#glow)">
+    <rect x="8" y="11" width="68" height="68" rx="20" fill="url(#nexusGrad)" />
+    <rect x="8" y="11" width="68" height="68" rx="20" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1.5" />
+    <!-- Play Icon -->
+    <path d="M37 32.5L53.5 45L37 57.5V32.5Z" fill="#FFFFFF" />
+  </g>
+
+  <!-- Typography -->
+  <text x="96" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="40" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">
+    Nexus<tspan fill="#3B82F6" font-weight="800">LMS</tspan>
+  </text>
+  
+  <text x="98" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#94A3B8" letter-spacing="2.5">
+    PLATAFORMA EDUCACIONAL
+  </text>
+</svg>
