@@ -18,6 +18,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Nenhum arquivo enviado." }, { status: 400 });
     }
 
+    // Validar tamanho máximo (4MB para ambiente serverless)
+    if (file.size > 4 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "A imagem é muito grande. Por favor, envie uma imagem de até 4MB." },
+        { status: 400 }
+      );
+    }
+
     // Validar tipo de arquivo
     const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/jpg"];
     if (!allowedMimeTypes.includes(file.type)) {
@@ -38,39 +46,54 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // 1. Se o Supabase estiver configurado, salvar no Supabase Storage
+    // 1. Tentar salvar no Supabase Storage se configurado
     if (supabase) {
-      const bucketName = process.env.SUPABASE_STORAGE_BUCKET || "lms-uploads";
+      try {
+        const bucketName = process.env.SUPABASE_STORAGE_BUCKET || "lms-uploads";
 
-      const { error: uploadError } = await supabase.storage
-        .from(bucketName)
-        .upload(uniqueFileName, buffer, {
-          contentType: file.type,
-          upsert: true,
-        });
-
-      if (!uploadError) {
-        const { data } = supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from(bucketName)
-          .getPublicUrl(uniqueFileName);
+          .upload(uniqueFileName, buffer, {
+            contentType: file.type,
+            upsert: true,
+          });
 
-        return NextResponse.json({ success: true, url: data.publicUrl });
+        if (!uploadError) {
+          const { data } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(uniqueFileName);
+
+          return NextResponse.json({ success: true, url: data.publicUrl });
+        }
+
+        console.warn("Supabase Storage falhou, usando fallback:", uploadError.message);
+      } catch (sbErr) {
+        console.warn("Erro de conexão ao Supabase Storage:", sbErr);
       }
-
-      console.warn("Falha no upload para Supabase Storage, recorrendo ao disco local:", uploadError);
     }
 
-    // 2. Fallback: Gravar no disco local (desenvolvimento ou ambiente com disco persistente)
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    // 2. Tentar salvar no disco local se NÃO estiver em ambiente serverless (ex: dev local ou VPS com disco gravável)
+    if (!process.env.VERCEL) {
+      try {
+        const uploadDir = path.join(process.cwd(), "public", "uploads");
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const filePath = path.join(uploadDir, uniqueFileName);
+        fs.writeFileSync(filePath, buffer);
+
+        const publicUrl = `/uploads/${uniqueFileName}`;
+        return NextResponse.json({ success: true, url: publicUrl });
+      } catch (diskErr) {
+        console.warn("Ambiente somente-leitura ou disco inacessível, gerando Data URL:", diskErr);
+      }
     }
 
-    const filePath = path.join(uploadDir, uniqueFileName);
-    fs.writeFileSync(filePath, buffer);
-
-    const publicUrl = `/uploads/${uniqueFileName}`;
-    return NextResponse.json({ success: true, url: publicUrl });
+    // 3. Fallback resiliente para Vercel Serverless: gerar Data URL Base64 de alta fidelidade
+    const base64 = buffer.toString("base64");
+    const dataUrl = `data:${file.type};base64,${base64}`;
+    return NextResponse.json({ success: true, url: dataUrl });
   } catch (error) {
     console.error("Erro no upload:", error);
     return NextResponse.json(
