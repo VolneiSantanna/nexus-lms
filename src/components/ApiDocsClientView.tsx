@@ -353,6 +353,72 @@ const data = await res.json();`,
   body: JSON.stringify({ title: 'Módulo 1: Setup', courseId: 'ID_DO_CURSO' })
 });`,
     },
+    {
+      id: "modules-update",
+      category: "Módulos",
+      method: "PUT",
+      path: "/api/admin/modules/{id}",
+      title: "Atualizar Módulo",
+      description: "Atualiza o título e/ou ordenação de um módulo existente.",
+      authRequired: "ADMIN",
+      headers: {
+        Authorization: `Bearer ${tokenPlaceholder}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(
+        {
+          title: "Módulo 1: Setup Avançado",
+        },
+        null,
+        2
+      ),
+      response: JSON.stringify(
+        {
+          success: true,
+          module: {
+            id: "cm_modulo_123",
+            title: "Módulo 1: Setup Avançado",
+            orderIndex: 1,
+            courseId: "ID_DO_CURSO_AQUI",
+          },
+        },
+        null,
+        2
+      ),
+      curlExample: `curl -X PUT http://localhost:3000/api/admin/modules/cm_modulo_123 \\
+  -H "Authorization: Bearer ${tokenPlaceholder}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"title":"Módulo 1: Setup Avançado"}'`,
+      jsExample: `const res = await fetch('http://localhost:3000/api/admin/modules/cm_modulo_123', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Bearer ${tokenPlaceholder}',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ title: 'Módulo 1: Setup Avançado' })
+});`,
+    },
+    {
+      id: "modules-delete",
+      category: "Módulos",
+      method: "DELETE",
+      path: "/api/admin/modules/{id}",
+      title: "Excluir Módulo",
+      description: "Exclui um módulo e todas as suas aulas associadas (deleção em cascata).",
+      authRequired: "ADMIN",
+      headers: {
+        Authorization: `Bearer ${tokenPlaceholder}`,
+      },
+      response: JSON.stringify({ success: true }, null, 2),
+      curlExample: `curl -X DELETE http://localhost:3000/api/admin/modules/cm_modulo_123 \\
+  -H "Authorization: Bearer ${tokenPlaceholder}"`,
+      jsExample: `const res = await fetch('http://localhost:3000/api/admin/modules/cm_modulo_123', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer ${tokenPlaceholder}'
+  }
+});`,
+    },
 
     // 4. Aulas & Lives
     {

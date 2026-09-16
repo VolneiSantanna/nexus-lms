@@ -36,6 +36,8 @@ Gravado automaticamente no navegador pelo endpoint `POST /api/auth/login`. Permi
   - [DELETE /api/admin/courses/{id}](#delete-apiadmincoursesid)
 - [5. Gestão de Módulos (Admin)](#5-gestão-de-módulos-admin)
   - [POST /api/admin/modules](#post-apiadminmodules)
+  - [PUT /api/admin/modules/{id}](#put-apiadminmodulesid)
+  - [DELETE /api/admin/modules/{id}](#delete-apiadminmodulesid)
 - [6. Gestão de Aulas & Lives (Admin)](#6-gestão-de-aulas--lives-admin)
   - [POST /api/admin/lessons](#post-apiadminlessons)
   - [PUT /api/admin/lessons/{id}](#put-apiadminlessonsid)
@@ -237,6 +239,30 @@ Cria um módulo dentro de um curso existente.
 }
 ```
 * **Resposta (201 Created):** Retorna o módulo com `orderIndex` calculado automaticamente.
+
+---
+
+### `PUT /api/admin/modules/{id}`
+Atualiza o título e/ou a ordem de um módulo.
+
+* **Acesso:** Apenas Administrador
+* **Headers:** `Authorization: Bearer <token>`, `Content-Type: application/json`
+* **Body:**
+```json
+{
+  "title": "Módulo 1: Introdução Atualizada"
+}
+```
+* **Resposta (200 OK):** Retorna o módulo atualizado.
+
+---
+
+### `DELETE /api/admin/modules/{id}`
+Exclui um módulo e todas as suas aulas associadas (deleção em cascata).
+
+* **Acesso:** Apenas Administrador
+* **Headers:** `Authorization: Bearer <token>`
+* **Resposta (200 OK):** `{ "success": true }`
 
 ---
 
