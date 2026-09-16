@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -22,6 +22,7 @@ import {
   UserX,
   ChevronDown,
   ChevronRight,
+  X,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -132,6 +133,23 @@ export function CourseManageClientView({
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Fechar modais ao pressionar ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowEditCourse(false);
+        setShowAddModule(false);
+        setEditingModule(null);
+        setShowAddLesson(null);
+        setEditingLesson(null);
+        setShowEnrollModal(false);
+        setSelectedStudentToEnroll("");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const allLessons = course.modules.flatMap((m) => m.lessons);
   const totalVod = allLessons.filter((l) => l.type === "VOD").length;
@@ -792,9 +810,25 @@ export function CourseManageClientView({
 
       {/* MODAL: EDITAR CURSO */}
       {showEditCourse && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-base font-bold text-white">Editar Curso</h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowEditCourse(false)}
+        >
+          <div
+            className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[#1e2533]">
+              <h2 className="text-base font-bold text-white">Editar Curso</h2>
+              <button
+                type="button"
+                onClick={() => setShowEditCourse(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#182030] transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleUpdateCourse} className="space-y-4">
               <div>
@@ -855,9 +889,25 @@ export function CourseManageClientView({
 
       {/* MODAL: NOVO MÓDULO */}
       {showAddModule && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h2 className="text-base font-bold text-white">Adicionar Novo Módulo</h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowAddModule(false)}
+        >
+          <div
+            className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[#1e2533]">
+              <h2 className="text-base font-bold text-white">Adicionar Novo Módulo</h2>
+              <button
+                type="button"
+                onClick={() => setShowAddModule(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#182030] transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleCreateModule} className="space-y-4">
               <div>
@@ -897,9 +947,25 @@ export function CourseManageClientView({
 
       {/* MODAL: EDITAR MÓDULO */}
       {editingModule && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h2 className="text-base font-bold text-white">Editar Módulo</h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setEditingModule(null)}
+        >
+          <div
+            className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[#1e2533]">
+              <h2 className="text-base font-bold text-white">Editar Módulo</h2>
+              <button
+                type="button"
+                onClick={() => setEditingModule(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#182030] transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleUpdateModule} className="space-y-4">
               <div>
@@ -939,9 +1005,25 @@ export function CourseManageClientView({
 
       {/* MODAL: NOVA AULA */}
       {showAddLesson && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-base font-bold text-white">Adicionar Aula ou Live</h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowAddLesson(null)}
+        >
+          <div
+            className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[#1e2533]">
+              <h2 className="text-base font-bold text-white">Adicionar Aula ou Live</h2>
+              <button
+                type="button"
+                onClick={() => setShowAddLesson(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#182030] transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleCreateLesson} className="space-y-4">
               <div>
@@ -1133,9 +1215,25 @@ export function CourseManageClientView({
 
       {/* MODAL: EDITAR AULA */}
       {editingLesson && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-base font-bold text-white">Editar Aula</h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setEditingLesson(null)}
+        >
+          <div
+            className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[#1e2533]">
+              <h2 className="text-base font-bold text-white">Editar Aula</h2>
+              <button
+                type="button"
+                onClick={() => setEditingLesson(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#182030] transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleUpdateLesson} className="space-y-4">
               <div>
@@ -1332,14 +1430,50 @@ export function CourseManageClientView({
 
       {/* MODAL: MATRICULAR ALUNO NESTE CURSO */}
       {showEnrollModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h2 className="text-base font-bold text-white">Matricular Aluno nesta Turma</h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => {
+            setShowEnrollModal(false);
+            setSelectedStudentToEnroll("");
+          }}
+        >
+          <div
+            className="bg-[#11141c] border border-[#1e2533] rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[#1e2533]">
+              <h2 className="text-base font-bold text-white">Matricular Aluno nesta Turma</h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEnrollModal(false);
+                  setSelectedStudentToEnroll("");
+                }}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#182030] transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             {availableStudents.length === 0 ? (
-              <p className="text-xs text-slate-400">
-                Todos os alunos cadastrados na plataforma já estão matriculados neste curso.
-              </p>
+              <div className="space-y-4 pt-1">
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Todos os alunos cadastrados na plataforma já estão matriculados neste curso.
+                </p>
+                <div className="flex items-center justify-end pt-3 border-t border-[#1e2533]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEnrollModal(false);
+                      setSelectedStudentToEnroll("");
+                    }}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition-colors"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
             ) : (
               <div className="space-y-4">
                 <div>
