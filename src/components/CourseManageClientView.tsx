@@ -1074,13 +1074,13 @@ export function CourseManageClientView({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Código de Embed do Player (&lt;iframe&gt;)
+                  Código de Embed do Player (&lt;div&gt;, &lt;iframe&gt; ou URL)
                 </label>
                 <textarea
                   value={newLesson.videoEmbedCode}
                   onChange={(e) => setNewLesson({ ...newLesson, videoEmbedCode: e.target.value })}
-                  placeholder='Cole a tag <iframe src="..."></iframe> do seu serviço de streaming'
-                  rows={3}
+                  placeholder='Cole o código de embed do player (Spalla, Panda Video, YouTube, Vimeo, etc.)'
+                  rows={4}
                   className="w-full px-3 py-2 bg-[#0b0d12] border border-[#1e2533] rounded-xl text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                 />
               </div>
@@ -1285,14 +1285,15 @@ export function CourseManageClientView({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Embed do Player (&lt;iframe&gt;)
+                  Código de Embed do Player (&lt;div&gt;, &lt;iframe&gt; ou URL)
                 </label>
                 <textarea
                   value={editingLesson.videoEmbedCode}
                   onChange={(e) =>
                     setEditingLesson({ ...editingLesson, videoEmbedCode: e.target.value })
                   }
-                  rows={3}
+                  rows={4}
+                  placeholder='Cole o código de embed do player (Spalla, Panda Video, YouTube, Vimeo, etc.)'
                   className="w-full px-3 py-2 bg-[#0b0d12] border border-[#1e2533] rounded-xl text-xs text-white font-mono focus:outline-none focus:border-blue-500"
                 />
               </div>
